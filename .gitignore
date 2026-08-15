@@ -6,7 +6,6 @@ __pycache__/
 venv/
 env/
 dist/
-build/
 *.spec
 
 # IDE / OS
