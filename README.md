@@ -1,3 +1,9 @@
+[![Python](https://img.shields.io/badge/Python-1F4E79?style=for-the-badge&logo=python&logoColor=FFD43B)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=FFFFFF)](https://flask.palletsprojects.com/)
+[![Leaflet](https://img.shields.io/badge/Leaflet-2E6B1F?style=for-the-badge&logo=leaflet&logoColor=FFFFFF)](https://leafletjs.com/)
+[![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-C65D00?style=for-the-badge&logo=openstreetmap&logoColor=FFFFFF)](https://www.openstreetmap.org/)
+[![PySide6](https://img.shields.io/badge/PySide6-16804A?style=for-the-badge&logo=qt&logoColor=FFFFFF)](https://doc.qt.io/qtforpython/)
+
 # 🛡️ TerraSecure
 
 ### Rover-Based Landmine Detection & Mapping
