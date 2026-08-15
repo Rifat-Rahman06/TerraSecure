@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerraSecure - Rover-Based Landmine Detection & Mapping</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans for UI, JetBrains Mono for Code/Loggers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="hmi-app" id="hmiRoot">
+        <!-- Top Navigation Header -->
+        <header class="hmi-header" id="hmiHeader">
+            <div class="header-logo-group">
+                <div class="logo-icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 3.5v5.2M12 15.3v5.2M3.5 12h5.2M15.3 12h5.2"></path>
+                        <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"></circle>
+                    </svg>
+                </div>
+                <div class="brand-text-group">
+                    <h1 class="brand-title">TerraSecure</h1>
+                    <span class="brand-subtitle">Rover-Based Landmine Detection & Mapping</span>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <!-- 1. Start / Stop Autonomous Single Action Button -->
+                <button class="btn btn-primary btn-auto-main" id="autoToggleBtn" title="Autonomous Operation Control">
+                    <i data-lucide="play" id="autoToggleIcon"></i>
+                    <span id="autoToggleText">START AUTONOMOUS</span>
+                </button>
+                
+                <!-- 2. Settings Button -->
+                <button class="btn btn-secondary" id="openSettingsBtn" title="Serial Connection Settings">
+                    <i data-lucide="settings"></i>
+                    <span>SETTINGS</span>
+                </button>
+
+                <!-- 3. Full Screen Button -->
+                <button class="btn btn-secondary" id="fullScreenBtn" title="Toggle Fullscreen">
+                    <i data-lucide="maximize"></i>
+                    <span>FULL SCREEN</span>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Main Dashboard Splitter Layout -->
+        <main class="dashboard-grid">
+            <!-- Left Sidebar: Detection Log Panel -->
+            <section class="dashboard-panel panel-left" id="panelTargets">
+                <div class="panel-header">
+                    <div class="panel-header-title">
+                        <i data-lucide="file-text" class="panel-icon"></i>
+                        <h2>DETECTION LOG</h2>
+                    </div>
+                    <span class="targets-count" id="targetCountBadge">Total: 0</span>
+                </div>
+                
+                <div class="targets-list-container">
+                    <div class="targets-header">
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                            <input type="checkbox" id="markAllTargets" style="cursor: pointer; accent-color: var(--hmi-accent); width: 14px; height: 14px; margin: 0;" title="Select/Deselect All" />
+                        </div>
+                        <span>TIME</span>
+                        <span>COORDINATES</span>
+                        <span>SIGNAL</span>
+                    </div>
+                    <ul class="targets-list" id="targetsList">
+                        <!-- Dynamic items will go here -->
+                        <div class="empty-state" id="targetsEmptyState">
+                            <i data-lucide="file-search"></i>
+                            <p>No metal detections logged yet.</p>
+                        </div>
+                    </ul>
+                </div>
+                
+                <!-- Compact, Professional Action Controls -->
+                <div class="panel-footer compact-footer">
+                    <div class="compact-btn-row">
+                        <button class="btn btn-compact btn-danger-subtle" id="deleteTargetBtn" disabled title="Delete selected detections">
+                            <i data-lucide="trash-2"></i>
+                            <span>Delete</span>
+                        </button>
+                        <button class="btn btn-compact btn-neutral" id="downloadCsvBtn" title="Download CSV report">
+                            <i data-lucide="download"></i>
+                            <span>Download CSV</span>
+                        </button>
+                        <button class="btn btn-compact btn-neutral" id="uploadCsvTriggerBtn" title="Upload CSV detections">
+                            <i data-lucide="upload"></i>
+                            <span>Upload CSV</span>
+                        </button>
+                    </div>
+                    <input type="file" id="csvFileInput" accept=".csv" style="display: none;" />
+                </div>
+            </section>
+            
+            <!-- Central Map Panel -->
+            <section class="dashboard-panel panel-center" id="panelMap">
+                <div class="panel-header">
+                    <div class="panel-header-title">
+                        <i data-lucide="map" class="panel-icon"></i>
+                        <h2>GPS LIVE TRACKER</h2>
+                    </div>
+                    
+                    <!-- Map Header Telemetry: Tilt X / Tilt Y, Lat/Long Coordinates, & Far-Right Connection Status -->
+                    <div class="map-header-telemetry">
+                        <div class="tilt-panels-wrapper">
+                            <div class="tilt-badge-card" title="Pitch Angle">
+                                <span class="tilt-label">Tilt X</span>
+                                <span class="tilt-value" id="pitchVal">0°</span>
+                            </div>
+                            <div class="tilt-badge-card" title="Roll Angle">
+                                <span class="tilt-label">Tilt Y</span>
+                                <span class="tilt-value" id="rollVal">0°</span>
+                            </div>
+                        </div>
+                        
+                        <div class="map-coordinates" id="mapHoverCoords" title="Live Hover Coordinates">
+                            Lat: 0.000000 | Long: 0.000000
+                        </div>
+
+                        <!-- Connection Status on the Far-Right Side of Secondary Header -->
+                        <div class="status-badge" id="serialStatusBadge" title="Serial Connection Status">
+                            <span class="status-dot disconnected" id="serialStatusDot"></span>
+                            <span class="status-label" id="serialStatusText">DISCONNECTED</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="map-wrapper" style="position: relative;">
+                    <div id="map"></div>
+
+                    <!-- Top-Right Rover Stats Overlay: Battery Level | Rover Speed | Sensitivity -->
+                    <div class="map-rover-stats-overlay" id="mapRoverStatsOverlay">
+                        <!-- Battery Level -->
+                        <div class="stat-pill-card" title="Battery Charge">
+                            <div class="stat-pill-icon battery">
+                                <i data-lucide="battery-charging"></i>
+                            </div>
+                            <div class="stat-pill-info">
+                                <span class="stat-pill-label">BATTERY</span>
+                                <span class="stat-pill-value" id="batteryText">0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Rover Speed -->
+                        <div class="stat-pill-card" title="Rover Speed">
+                            <div class="stat-pill-icon speed">
+                                <i data-lucide="gauge"></i>
+                            </div>
+                            <div class="stat-pill-info">
+                                <span class="stat-pill-label">SPEED</span>
+                                <span class="stat-pill-value" id="speedText">0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Sensitivity -->
+                        <div class="stat-pill-card" title="Detector Sensitivity">
+                            <div class="stat-pill-icon sensitivity">
+                                <i data-lucide="radio"></i>
+                            </div>
+                            <div class="stat-pill-info">
+                                <span class="stat-pill-label">SENSITIVITY</span>
+                                <span class="stat-pill-value" id="sensitivityText">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terminal Output Console Overlay (Output Only - No Inputs) -->
+                    <div class="map-terminal-overlay" id="mapTerminalOverlay">
+                        <div class="terminal-overlay-header">
+                            <div class="terminal-title-group">
+                                <i data-lucide="terminal" class="terminal-icon"></i>
+                                <span>TERMINAL</span>
+                            </div>
+                            <div class="terminal-header-actions">
+                                <button class="terminal-toggle-btn" id="terminalToggleBtn" title="Hide/Show Terminal">
+                                    <i data-lucide="chevron-up" id="terminalToggleIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="terminal-output-box" id="consoleLogBox">
+                            <!-- Live trace logs render here -->
+                        </div>
+                    </div>
+
+                    <!-- Bottom-Left Compass Overlay -->
+                    <div class="map-compass-overlay" id="mapCompassOverlay" title="Rover Compass Heading">
+                        <div class="compass-dial" id="compassDial">
+                            <div class="compass-pointer"></div>
+                            <div class="compass-ticks">
+                                <span class="tick-n">N</span>
+                                <span class="tick-e">E</span>
+                                <span class="tick-s">S</span>
+                                <span class="tick-w">W</span>
+                            </div>
+                        </div>
+                        <div class="compass-heading-badge" id="compassText">0°</div>
+                    </div>
+
+                    <!-- Four-Point Boundary & Autonomous Modal Overlay -->
+                    <div class="boundary-overlay-card" id="boundaryOverlayCard" style="display: none;">
+                        <div class="boundary-overlay-header">
+                            <div class="boundary-title-group">
+                                <i data-lucide="scan" class="boundary-icon"></i>
+                                <span id="boundaryModalTitle">4-POINT AUTONOMOUS BOUNDARY</span>
+                            </div>
+                            <button class="boundary-close-btn" id="cancelBoundaryBtn" title="Close Modal">&times;</button>
+                        </div>
+                        <div class="boundary-overlay-body">
+                            <p class="boundary-instruction" id="boundaryInstructionText">Click 4 points on the map to define the boundary corners (0/4)</p>
+                            
+                            <!-- 4-Corner Coordinates Display -->
+                            <div class="boundary-coords-grid" id="boundaryCoordsGrid" style="display: none;">
+                                <div class="coord-item">
+                                    <span class="coord-tag">NW</span>
+                                    <span class="coord-val" id="coordNW">--</span>
+                                </div>
+                                <div class="coord-item">
+                                    <span class="coord-tag">NE</span>
+                                    <span class="coord-val" id="coordNE">--</span>
+                                </div>
+                                <div class="coord-item">
+                                    <span class="coord-tag">SE</span>
+                                    <span class="coord-val" id="coordSE">--</span>
+                                </div>
+                                <div class="coord-item">
+                                    <span class="coord-tag">SW</span>
+                                    <span class="coord-val" id="coordSW">--</span>
+                                </div>
+                            </div>
+
+                            <div class="boundary-actions-row" id="boundaryActionsRow">
+                                <button class="btn btn-compact btn-neutral" id="resetBoundaryBtn" style="display: none;">
+                                    <i data-lucide="rotate-ccw"></i>
+                                    <span>Reset Points</span>
+                                </button>
+                                <button class="btn btn-compact btn-success-action" id="startBoundaryAutoBtn" style="display: none;">
+                                    <i data-lucide="play" id="startBoundaryIcon"></i>
+                                    <span id="startBoundaryBtnText">Start Autonomous</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Settings Modal overlay -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="settings" style="color: var(--hmi-accent); width: 18px; height: 18px;"></i>
+                    <h3 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--hmi-text-primary); text-transform: uppercase;">CONNECTION SETTINGS</h3>
+                </div>
+                <button class="modal-close-btn" id="closeSettingsModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 12px; color: var(--hmi-text-secondary); margin-bottom: 16px;">Configure Rover COM Port interface and baud rate connection speed.</p>
+                
+                <div class="control-row" style="margin-bottom: 14px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
+                    <label for="serialPortSelect" style="font-size: 10px; font-weight: 700; color: var(--hmi-text-secondary); text-transform: uppercase;">SERIAL / COM PORT</label>
+                    <select class="form-input" id="serialPortSelect" style="width: 100%;">
+                        <option value="" disabled selected>Select Serial Port...</option>
+                    </select>
+                </div>
+                <div class="control-row" style="margin-bottom: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
+                    <label for="baudRateSelect" style="font-size: 10px; font-weight: 700; color: var(--hmi-text-secondary); text-transform: uppercase;">BAUDRATE</label>
+                    <select class="form-input" id="baudRateSelect" style="width: 100%;">
+                        <option value="9600">9600 bps</option>
+                        <option value="38400">38400 bps</option>
+                        <option value="57600">57600 bps</option>
+                        <option value="115200" selected>115200 bps</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group" style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-primary w-full" id="connectSerialBtn">CONNECT</button>
+                    <button class="btn btn-danger w-full" id="disconnectSerialBtn" disabled>DISCONNECT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Lucide Library for Beautiful SVG Vector Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- SINGLE JavaScript Web Logic Application -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+flask
+flask-cors
+pyserial
+pywebview
+
+# Development / packaging (optional):
+# pyinstaller

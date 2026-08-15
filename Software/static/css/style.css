@@ -1,0 +1,1301 @@
+:root {
+    /* Sophisticated light neutrals with cool/slate undertone (<5% saturation) */
+    --hmi-bg: #f1f5f9;          /* Slate 100 - base background */
+    --hmi-card-bg: #ffffff;     /* White - containers */
+    --hmi-border: #cbd5e1;      /* Slate 300 - borders */
+    --hmi-border-light: #e2e8f0;/* Slate 200 - subtle dividers */
+    
+    /* Typography colors with high legibility contrast */
+    --hmi-text-primary: #0f172a;  /* Slate 900 - titles and primary text */
+    --hmi-text-secondary: #475569;/* Slate 600 - labels and meta text */
+    --hmi-text-muted: #64748b;    /* Slate 500 - placeholder / logs */
+
+    /* Accent & Functional Alert colors */
+    --hmi-accent: #2563eb;        /* Blue 600 - active buttons, path highlights */
+    --hmi-accent-hover: #1d4ed8;  /* Blue 700 */
+    --hmi-accent-light: #dbeafe;  /* Blue 100 - active background states */
+    
+    --hmi-success: #10b981;       /* Emerald 500 - online, auto active, stored items */
+    --hmi-success-hover: #059669; /* Emerald 600 */
+    --hmi-success-light: #d1fae5; /* Emerald 100 */
+    
+    --hmi-danger: #ef4444;        /* Red 500 - offline, critical alerts, deletes */
+    --hmi-danger-hover: #dc2626;  /* Red 600 */
+    --hmi-danger-light: #fee2e2;  /* Red 100 */
+    
+    --hmi-warning: #f59e0b;       /* Amber 500 - metal detections, calibration */
+    --hmi-warning-light: #fef3c7; /* Amber 100 */
+
+    /* Typography scale (Step Ratio 1.125 for dense UI flexibility) */
+    --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-code: 'JetBrains Mono', "SFMono-Regular", Consolas, Menlo, monospace;
+}
+
+/* ==========================================================================
+   GLOBAL RESET & LAYOUT SYSTEMS
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: var(--hmi-bg);
+    color: var(--hmi-text-primary);
+    font-family: var(--font-ui);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.hmi-app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ==========================================================================
+   NAVIGATION HEADER BAR
+   ========================================================================== */
+
+.hmi-header {
+    background-color: var(--hmi-card-bg);
+    border-bottom: 2px solid var(--hmi-border);
+    height: 70px;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.04);
+}
+
+.header-logo-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo-icon-wrapper {
+    background-color: var(--hmi-accent-light);
+    color: var(--hmi-accent);
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(37, 99, 235, 0.15);
+}
+
+.logo-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.brand-text-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--hmi-accent);
+}
+
+.brand-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--hmi-text-primary);
+}
+
+.brand-subtitle {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--hmi-text-secondary);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Main Autonomous Operation Button */
+.btn-auto-main {
+    min-width: 168px;
+    height: 38px;
+    justify-content: center;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.btn-auto-main.active-auto {
+    background-color: #fee2e2 !important;
+    color: #dc2626 !important;
+    border: 1.5px solid #ef4444 !important;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.btn-auto-main.active-auto:hover {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+/* Serial Connection Badge: Only Connected / Disconnected */
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    background-color: var(--hmi-bg);
+    border: 1px solid var(--hmi-border-light);
+    border-radius: 20px;
+    height: 30px;
+    box-sizing: border-box;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.connected {
+    background-color: var(--hmi-success);
+    box-shadow: 0 0 8px var(--hmi-success);
+    animation: pulse-green 2s infinite;
+}
+
+.status-dot.disconnected {
+    background-color: var(--hmi-danger);
+    box-shadow: 0 0 8px var(--hmi-danger);
+    animation: pulse-red 2s infinite;
+}
+
+.status-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--hmi-text-secondary);
+}
+
+.divider {
+    height: 24px;
+    width: 1px;
+    background-color: var(--hmi-border);
+}
+
+/* ==========================================================================
+   GRID PANEL ARCHITECTURE
+   ========================================================================== */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    flex-grow: 1;
+    overflow: hidden;
+    height: calc(100vh - 70px);
+}
+
+.dashboard-panel {
+    background-color: var(--hmi-card-bg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.panel-left {
+    border-right: 2px solid var(--hmi-border);
+}
+
+.panel-center {
+    background-color: var(--hmi-bg);
+    border-right: none;
+}
+
+/* Panel Header styling */
+.panel-header {
+    height: 54px;
+    padding: 0 20px;
+    border-bottom: 1.5px solid var(--hmi-border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--hmi-card-bg);
+}
+
+.panel-header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.panel-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--hmi-text-secondary);
+}
+
+.panel-header h2 {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.75px;
+    color: var(--hmi-text-primary);
+    text-transform: uppercase;
+}
+
+.targets-count {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--hmi-accent);
+    background-color: var(--hmi-accent-light);
+    padding: 4px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+/* Map Header Telemetry: Fixed-width Tilt X & Tilt Y Panels */
+.map-header-telemetry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tilt-panels-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tilt-badge-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 30px;
+    padding: 0 10px;
+    background-color: var(--hmi-bg);
+    border: 1px solid var(--hmi-border-light);
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.tilt-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4338ca; /* Refined indigo accent for clear contrast and consistency */
+    letter-spacing: 0.25px;
+    margin: 0;
+}
+
+.tilt-value {
+    font-family: var(--font-code);
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--hmi-text-primary);
+    text-align: left;
+    min-width: 0;
+}
+
+.map-coordinates {
+    font-family: var(--font-code);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--hmi-text-secondary);
+    background-color: var(--hmi-bg);
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--hmi-border-light);
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   BUTTONS & INPUT SYSTEM
+   ========================================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 10px 18px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.btn i {
+    width: 14px;
+    height: 14px;
+}
+
+/* Compact Button System - Explicit overrides defined AFTER .btn to eliminate specificity conflicts */
+.compact-footer {
+    padding: 8px 12px;
+    border-top: 1.5px solid var(--hmi-border-light);
+    background-color: var(--hmi-card-bg);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.compact-btn-row {
+    display: grid;
+    grid-template-columns: 0.9fr 1.2fr 1.1fr;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.compact-btn-row .btn i,
+.compact-btn-row .btn svg,
+#deleteTargetBtn i,
+#deleteTargetBtn svg,
+#downloadCsvBtn i,
+#downloadCsvBtn svg,
+#uploadCsvTriggerBtn i,
+#uploadCsvTriggerBtn svg {
+    width: 10.5px !important;
+    height: 10.5px !important;
+    max-width: 10.5px !important;
+    max-height: 10.5px !important;
+    stroke-width: 2.25;
+    flex-shrink: 0;
+}
+
+.btn.btn-compact {
+    height: 26px;
+    min-height: 26px;
+    padding: 0 6px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    gap: 4px;
+    border-radius: 5px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn.btn-compact i {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+}
+
+.btn.btn-compact span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.btn-danger-subtle {
+    background-color: var(--hmi-danger-light);
+    color: var(--hmi-danger);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger-subtle:hover:not(:disabled) {
+    background-color: var(--hmi-danger);
+    color: #ffffff;
+}
+
+.btn-danger-subtle:disabled {
+    background-color: var(--hmi-bg);
+    color: var(--hmi-text-muted);
+    border-color: var(--hmi-border-light);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-neutral {
+    background-color: var(--hmi-bg);
+    color: var(--hmi-text-secondary);
+    border: 1px solid var(--hmi-border);
+}
+
+.btn-neutral:hover {
+    background-color: var(--hmi-border-light);
+    color: var(--hmi-text-primary);
+}
+
+.btn-primary {
+    background-color: var(--hmi-accent);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--hmi-accent-hover);
+}
+
+.btn-primary:disabled {
+    background-color: var(--hmi-border);
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background-color: var(--hmi-bg);
+    color: var(--hmi-text-secondary);
+    border-color: var(--hmi-border);
+}
+
+.btn-secondary:hover {
+    background-color: var(--hmi-border-light);
+    color: var(--hmi-text-primary);
+}
+
+.btn-success {
+    background-color: var(--hmi-success);
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: var(--hmi-success-hover);
+}
+
+.btn-danger {
+    background-color: var(--hmi-danger-light);
+    color: var(--hmi-danger);
+    border-color: rgba(239, 68, 68, 0.25);
+}
+
+.btn-danger:hover {
+    background-color: var(--hmi-danger);
+    color: white;
+}
+
+.btn-danger:disabled {
+    background-color: var(--hmi-bg);
+    color: var(--hmi-text-muted);
+    border-color: var(--hmi-border-light);
+    cursor: not-allowed;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.btn-icon-center {
+    justify-content: center;
+}
+
+/* Form Controls */
+.form-input {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1.5px solid var(--hmi-border);
+    background-color: var(--hmi-card-bg);
+    color: var(--hmi-text-primary);
+    outline: none;
+    transition: border-color 0.2s ease;
+    width: 100%;
+}
+
+.form-input:focus {
+    border-color: var(--hmi-accent);
+}
+
+select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 36px;
+}
+
+.form-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--hmi-border-light);
+    outline: none;
+}
+
+.form-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--hmi-accent);
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
+    transition: transform 0.1s ease;
+}
+
+.form-range::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+/* ==========================================================================
+   DETECTION LOG TREE LIST
+   ========================================================================== */
+
+.targets-list-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.targets-header {
+    display: grid;
+    grid-template-columns: 28px 72px 1fr 52px;
+    background-color: var(--hmi-bg);
+    border-bottom: 1.5px solid var(--hmi-border);
+    padding: 8px 12px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.75px;
+    color: var(--hmi-text-secondary);
+}
+
+.targets-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.target-item {
+    display: grid;
+    grid-template-columns: 28px 72px 1fr 52px;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--hmi-border-light);
+    font-size: 11px;
+    color: var(--hmi-text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.target-item:hover {
+    background-color: var(--hmi-bg);
+}
+
+.target-item.selected {
+    background-color: var(--hmi-accent-light) !important;
+    border-left: 3px solid var(--hmi-accent);
+    padding-left: 9px;
+}
+
+.target-time {
+    font-family: var(--font-code);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--hmi-text-secondary);
+    white-space: nowrap;
+}
+
+.target-coords {
+    font-family: var(--font-code);
+    font-size: 10px;
+    color: var(--hmi-text-primary);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.target-signal-badge {
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 3px 5px;
+    background-color: var(--hmi-warning-light);
+    color: var(--hmi-warning);
+    border-radius: 4px;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    text-align: center;
+    font-family: var(--font-code);
+}
+
+/* Empty States */
+.empty-state {
+    padding: 60px 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--hmi-text-muted);
+}
+
+.empty-state i {
+    width: 40px;
+    height: 40px;
+    stroke-width: 1.5;
+}
+
+.empty-state p {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   LIVE MAP DISPLAY & BOUNDARY MODE OVERLAY
+   ========================================================================== */
+
+.map-wrapper {
+    flex-grow: 1;
+    position: relative;
+    border-bottom: none;
+    overflow: hidden;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+/* Custom Marker Styling Override for Leaflet */
+.leaflet-container {
+    font-family: var(--font-ui) !important;
+}
+
+/* Floating Boundary Mode Card - Expanded Width & Centered Top Placement */
+.boundary-overlay-card {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 440px;
+    max-width: calc(100% - 28px);
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid var(--hmi-accent);
+    border-radius: 10px;
+    box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.22), 0 4px 10px rgba(0, 0, 0, 0.05);
+    z-index: 600;
+    overflow: hidden;
+    animation: fadeInModal 0.18s ease-out;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; transform: translate(-50%, -8px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.boundary-overlay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background-color: var(--hmi-accent-light);
+    border-bottom: 1px solid rgba(37, 99, 235, 0.15);
+}
+
+.boundary-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--hmi-accent);
+    letter-spacing: 0.5px;
+}
+
+.boundary-icon {
+    width: 15px;
+    height: 15px;
+}
+
+.boundary-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--hmi-text-secondary);
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+    border-radius: 4px;
+}
+
+.boundary-close-btn:hover {
+    color: var(--hmi-danger);
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.boundary-overlay-body {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.boundary-instruction {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--hmi-text-secondary);
+    line-height: 1.45;
+    margin: 0;
+}
+
+.boundary-coords-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: var(--hmi-bg);
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--hmi-border-light);
+}
+
+.coord-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-family: var(--font-code);
+}
+
+.coord-tag {
+    font-weight: 800;
+    color: var(--hmi-accent);
+    background: var(--hmi-accent-light);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9.5px;
+}
+
+.coord-val {
+    color: var(--hmi-text-primary);
+    font-weight: 600;
+}
+
+.boundary-actions-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.boundary-actions-row .btn,
+#boundaryActionsRow .btn,
+#resetBoundaryBtn,
+#startBoundaryAutoBtn {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 16px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    transition: all 0.18s ease;
+}
+
+.boundary-actions-row .btn i,
+#boundaryActionsRow .btn i,
+#resetBoundaryBtn i,
+#startBoundaryAutoBtn i {
+    width: 14px !important;
+    height: 14px !important;
+    stroke-width: 2.25;
+}
+
+.btn-success-action {
+    background-color: var(--hmi-success);
+    color: #ffffff;
+    flex-grow: 1;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.btn-success-action:hover {
+    background-color: var(--hmi-success-hover);
+    color: #ffffff;
+}
+
+.btn-danger-action {
+    background-color: var(--hmi-danger);
+    color: #ffffff;
+    flex-grow: 1;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger-action:hover {
+    background-color: var(--hmi-danger-hover);
+    color: #ffffff;
+}
+
+/* Leaflet Custom Boundary Corner Pin Marker */
+.boundary-corner-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    width: 22px;
+    height: 22px;
+}
+
+/* ==========================================================================
+   MAP OVERLAYS: GLASSMORPHISM ROVER STATS, TERMINAL STREAM, & COMPASS
+   ========================================================================== */
+
+/* 1. Top-Right Rover Stats Overlay: Battery Level | Speed | Sensitivity */
+.map-rover-stats-overlay {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 450;
+    pointer-events: auto;
+}
+
+.stat-pill-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 24px;
+    padding: 7px 15px 7px 8px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s ease;
+}
+
+.stat-pill-card:hover {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12);
+    transform: translateY(-1px);
+}
+
+.stat-pill-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-pill-icon i {
+    width: 17px;
+    height: 17px;
+}
+
+.stat-pill-icon.battery {
+    background-color: rgba(16, 185, 129, 0.14);
+    color: var(--hmi-success);
+}
+
+.stat-pill-icon.speed {
+    background-color: rgba(37, 99, 235, 0.14);
+    color: var(--hmi-accent);
+}
+
+.stat-pill-icon.sensitivity {
+    background-color: rgba(245, 158, 11, 0.14);
+    color: var(--hmi-warning);
+}
+
+.stat-pill-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-pill-label {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--hmi-text-secondary);
+    line-height: 1.1;
+}
+
+.stat-pill-value {
+    font-family: var(--font-code);
+    font-size: 14.5px;
+    font-weight: 800;
+    color: var(--hmi-text-primary);
+    line-height: 1.2;
+}
+
+/* 2. Middle-Right Serial Data Stream (Output Only) */
+.map-terminal-overlay {
+    position: absolute;
+    top: 72px;
+    bottom: 20px;
+    right: 14px;
+    width: 380px;
+    max-height: calc(100% - 92px);
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 8px 26px rgba(15, 23, 42, 0.1), 0 2px 6px rgba(15, 23, 42, 0.04);
+    z-index: 450;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    pointer-events: auto;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.map-terminal-overlay.collapsed {
+    bottom: auto;
+    max-height: 38px;
+    height: 38px;
+}
+
+.map-terminal-overlay.collapsed .terminal-output-box {
+    display: none;
+}
+
+.terminal-overlay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(248, 250, 252, 0.9);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.terminal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--hmi-text-primary);
+}
+
+.terminal-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--hmi-accent);
+}
+
+.terminal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.terminal-toggle-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 4px;
+    color: var(--hmi-text-secondary);
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.terminal-toggle-btn:hover {
+    background-color: var(--hmi-border-light);
+    color: var(--hmi-text-primary);
+}
+
+.terminal-toggle-btn i {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.25s ease;
+}
+
+.terminal-output-box {
+    padding: 12px 14px;
+    font-family: var(--font-code);
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #0f172a;
+    flex-grow: 1;
+    height: 100%;
+    min-height: 240px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 rgba(241, 245, 249, 0.5);
+}
+
+.terminal-output-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.terminal-output-box::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.terminal-output-box::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.terminal-output-box::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.trace-log { color: #64748b; }
+.trace-tx { color: #0284c7; font-weight: 600; }
+.trace-rx { color: #b45309; font-weight: 600; }
+.trace-err { color: #dc2626; font-weight: 700; }
+
+/* 3. Bottom-Left Compass Overlay */
+.map-compass-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 16px;
+    right: auto;
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 8px 26px rgba(15, 23, 42, 0.1), 0 2px 6px rgba(15, 23, 42, 0.04);
+    z-index: 450;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.map-compass-overlay:hover {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+}
+
+.compass-dial {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    border: 1.5px solid var(--hmi-border);
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: inset 0 2px 5px rgba(15, 23, 42, 0.06);
+    transition: transform 0.25s ease-out;
+}
+
+.compass-pointer {
+    position: absolute;
+    top: 5px;
+    left: calc(50% - 5px);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 30px solid var(--hmi-danger);
+    z-index: 10;
+    filter: drop-shadow(0 1px 2px rgba(239, 68, 68, 0.4));
+}
+
+.compass-ticks {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--hmi-text-secondary);
+}
+
+.tick-n { position: absolute; top: 3px; left: calc(50% - 5px); color: var(--hmi-danger); font-weight: 900; font-size: 11px; }
+.tick-e { position: absolute; right: 5px; top: calc(50% - 7px); }
+.tick-s { position: absolute; bottom: 3px; left: calc(50% - 4px); }
+.tick-w { position: absolute; left: 5px; top: calc(50% - 7px); }
+
+.compass-heading-badge {
+    font-family: var(--font-code);
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--hmi-text-primary);
+    background: rgba(241, 245, 249, 0.9);
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--hmi-border-light);
+}
+
+/* ==========================================================================
+   SETTINGS MODAL POPUP DISPLAY
+   ========================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: var(--hmi-card-bg);
+    border: 1px solid var(--hmi-border);
+    border-radius: 12px;
+    width: 380px;
+    max-width: 90%;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    transform: scale(0.95);
+    transition: transform 0.2s cubic-bezier(0.1, 0.8, 0.3, 1);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--hmi-border-light);
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--hmi-text-secondary);
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+    background-color: var(--hmi-bg);
+    color: var(--hmi-text-primary);
+}
+
+.modal-body {
+    padding: 18px;
+}
+
+/* ==========================================================================
+   ANIMATION INTERACTION CHIPS
+   ========================================================================== */
+
+@keyframes pulse-green {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* ==========================================================================
+   ROVER MARKER PULSING RING
+   ========================================================================== */
+
+.rover-pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border-radius: 50%;
+    border: 2px solid #2563eb;
+    opacity: 0;
+    z-index: 1;
+    animation: rover-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes rover-ping {
+    0% { transform: scale(1); opacity: 0.8; }
+    70% { transform: scale(2.5); opacity: 0; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* ==========================================================================
+   DRAG & DROP FILE UPLOAD STYLING
+   ========================================================================== */
+
+.targets-list-container {
+    transition: all 0.2s ease-in-out;
+    position: relative;
+}
+
+.targets-list-container.dragover {
+    background-color: var(--hmi-accent-light) !important;
+    border: 2px dashed var(--hmi-accent) !important;
+    transform: scale(0.99);
+}
+
+.targets-list-container.dragover::after {
+    content: "DROP CSV TARGET FILE";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--hmi-card-bg);
+    color: var(--hmi-accent);
+    border: 1px solid var(--hmi-border);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+    pointer-events: none;
+    z-index: 100;
+}
