@@ -413,6 +413,6 @@ TerraSecure/
 | :--- | :--- |
 | **Rifat Rahman** | `011202254` |
 | **Riasad Alvi** | `011212069` |
-| **Teammate Name** | `011...` |
+| **Tasniya Khan** | `011221522` |
 | **Teammate Name** | `011...` |
 | **Teammate Name** | `011...` |
