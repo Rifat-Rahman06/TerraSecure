@@ -17,14 +17,13 @@ The system is built around **three hardware nodes**: an ESP32-powered rover with
 # 🏆 Achievement
 
 
-**TerraSecure** was developed as part of the **Microprocessor & Microcontroller Laboratory** course project and was presented at **United International University’s Project Showcase**.
+**TerraSecure** was developed as part of the **Electronics Laboratory** course project and was presented at **United International University’s Project Showcase**.
 
-The project received recognition at the showcase, with the team achieving 🥉<span style="color: #58a6ff;">**3rd Runner-Up**</span> .
-
-> **Team:** **Agro Genesis**  
-> **Course:** **Microprocessor & Microcontroller Laboratory**  
-> **Achievement:** 🥉 **3rd Runner-Up**  
-> **Trimester:** **243**
+The project received recognition at the showcase, with the team achieving 🥉<span style="color: #58a6ff;">**1st Runner-Up**</span> .
+ 
+> **Course:** **Electronics Laboratory**  
+> **Achievement:** 🥉 **1st Runner-Up**  
+> **Trimester:** **242**
 
 <table align="center">
   <tr>
@@ -402,4 +401,18 @@ TerraSecure/
 │
 └── README.md
 ```
+---
 
+## 🎓 Course & Team Details
+
+> **Institution:** United International University (UIU)  
+> **Course:** Electronics Laboratory  
+> **Trimester:** 242
+
+| Team Member | Student ID |
+| :--- | :--- |
+| **Rifat Rahman** | `011202254` |
+| **Teammate Name** | `011...` |
+| **Teammate Name** | `011...` |
+| **Teammate Name** | `011...` |
+| **Teammate Name** | `011...` |
