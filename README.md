@@ -412,7 +412,7 @@ TerraSecure/
 | Team Member | Student ID |
 | :--- | :--- |
 | **Rifat Rahman** | `011202254` |
-| **Teammate Name** | `011...` |
+| **Riasad Alvi** | `011212069` |
 | **Teammate Name** | `011...` |
 | **Teammate Name** | `011...` |
 | **Teammate Name** | `011...` |
